@@ -6,7 +6,8 @@
   "scripts": {
     "transpile": "tsc -p source",
     "start": "node dist/main",
-    "serve": "npm run transpile && npm run start"
+    "serve": "npm run transpile && npm run start",
+    "postinstall": "npm run transpile"
   },
   "author": "",
   "license": "ISC",
