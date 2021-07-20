@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "es5",
+        "lib": [
+            "ES2015"
+        ],
+        "sourceMap": true,
+        "outDir": "../dist",
+        "baseUrl": ".",
+        "resolveJsonModule": true,
+        "paths": {
+            "@/*": [
+                "./*"
+            ]
+        }
+    }
+}
