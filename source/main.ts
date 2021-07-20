@@ -3,8 +3,11 @@ import * as morgan from 'morgan';
 import * as mongodb from 'mongodb';
 import * as express from 'express';
 
+const DB_URL = process.env.DB_URL ?? 'mongodb://localhost:27017';
+const PORT = process.env.PORT ?? 3000;
+
 async function dbQuery<T>(callback: (db: mongodb.Db) => Promise<T>): Promise<T> {
-    const connection = await mongodb.MongoClient.connect('mongodb://localhost:27017');
+    const connection = await mongodb.MongoClient.connect(DB_URL);
     const db = connection.db('wikiusers');
     const result = await callback(db);
     await connection.close();
@@ -35,6 +38,6 @@ app.get('/:lang/users/:id', async (req, res) => {
     res.json(users);
 });
 
-app.listen(3000, () => {
-    console.log('Listening on port 3000!');
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}!`);
 });
