@@ -2,6 +2,7 @@ import * as cors from 'cors';
 import * as morgan from 'morgan';
 import * as mongodb from 'mongodb';
 import * as express from 'express';
+import { MongoScanner } from 'mongo-scanner';
 
 const DB_URL = process.env.DB_URL ?? 'mongodb://localhost:27017';
 const PORT = process.env.PORT ?? 3000;
@@ -18,6 +19,13 @@ const app = express();
 
 app.use(cors());
 app.use(morgan('dev'));
+
+app.get('/langs', async (_req, res) => {
+    const mongoScanner = new MongoScanner();
+    const collections = await mongoScanner.listCollections('wikiusers');
+    const handledCollections = collections.filter(c => c.indexOf('_raw') === -1).map(c => c.replace('wiki', ''));
+    res.json(handledCollections);
+});
 
 app.get('/:lang/users', async (req, res) => {
     const lang = req.params.lang;
