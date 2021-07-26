@@ -20,14 +20,14 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 
-app.get('/langs', async (_req, res) => {
+app.get('/api/langs', async (_req, res) => {
     const mongoScanner = new MongoScanner();
     const collections = await mongoScanner.listCollections('wikiusers');
     const handledCollections = collections.filter(c => c.indexOf('_raw') === -1).map(c => c.replace('wiki', ''));
     res.json(handledCollections);
 });
 
-app.get('/:lang/users', async (req, res) => {
+app.get('/api/:lang/users', async (req, res) => {
     const lang = req.params.lang;
     const users = await dbQuery(async db => {
         const usersCollection = db.collection(`${lang}wiki`);
@@ -36,7 +36,7 @@ app.get('/:lang/users', async (req, res) => {
     res.json(users);
 });
 
-app.get('/:lang/users/:id', async (req, res) => {
+app.get('/api/:lang/users/:id', async (req, res) => {
     const lang = req.params.lang;
     const id = +req.params.id;
     const users = await dbQuery(async db => {
