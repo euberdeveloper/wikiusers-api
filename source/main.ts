@@ -21,7 +21,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.get('/api/langs', async (_req, res) => {
-    const mongoScanner = new MongoScanner();
+    const mongoScanner = new MongoScanner(DB_URL);
     const collections = await mongoScanner.listCollections('wikiusers');
     const handledCollections = collections.filter(c => c.indexOf('_raw') === -1).map(c => c.replace('wiki', ''));
     res.json(handledCollections);
