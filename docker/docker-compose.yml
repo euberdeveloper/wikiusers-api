@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+    mongodb:
+        image: mongo:latest
+        restart: always
+        volumes:
+          - mongodb-data:/data/db
+
+    wikiusers:
+        image: euberdeveloper/wikiusers-cli
+        volumes:
+            - wikiusers-datasets:/root/.wikiusers/datasets
+        environment:
+            WIKIUSERS_FORCE: 'true'
+            WIKIUSERS_LANGUAGE: ca
+            WIKIUSERS_DATABASE_URL: mongodb://mongodb:27017
+        depends_on: 
+            - mongodb
+        command:
+            bash -c "wikiusers rawprocess && wikiusers postprocess users"
+
+    api:
+        image: euberdeveloper/wikiusers-api
+        restart: always
+        environment:
+            DB_URL: mongodb://mongodb:27017
+        depends_on: 
+            - mongodb
+
+    webapp:
+        image: euberdeveloper/wikiusers-webapp
+        restart: "no"    
+        volumes:
+            - webapp-site:/app/site
+
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./nginx.conf:/etc/nginx/nginx.conf
+            - webapp-site:/app/webapp
+        ports:
+            - 8000:80
+        depends_on:
+            - api
+            - webapp
+
+volumes:
+    mongodb-data:
+    wikiusers-datasets:
+    webapp-site:
